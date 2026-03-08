@@ -9,8 +9,11 @@ const rubik = Rubik({
 })
 
 export const metadata: Metadata = {
-  title: "Noctiluz",
-  description: "Plataforma para olimpíadas científicas e reforço escolar",
+  title: "Diretoria Jim Carrey - Shop",
+  description: "A melhor (e mais duvidosa) loja de times de futebol do Brasil",
+  icons: {
+    icon: '/icon.png',
+  }
 };
 
 export default function RootLayout({

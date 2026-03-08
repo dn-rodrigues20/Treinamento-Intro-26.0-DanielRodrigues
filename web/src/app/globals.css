@@ -25,8 +25,11 @@ body {
   overflow-x: hidden;
 }
 ::selection {
-  color: var(--color-pink-100);
-  background-color: var(--color-pink-500);
+  @apply bg-green-500 text-zinc-900;
+}
+
+::-moz-selection {
+  @apply bg-green-500 text-zinc-900;
 }
 
 @utility button-md {
