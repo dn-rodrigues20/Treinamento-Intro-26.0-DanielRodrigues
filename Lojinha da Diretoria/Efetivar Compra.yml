@@ -1,0 +1,25 @@
+info:
+  name: Efetivar Compra
+  type: http
+  seq: 8
+
+http:
+  method: POST
+  url: http://localhost:3000/api/compras
+  body:
+    type: json
+    data: |-
+      {
+        "userId": "YWs5eoXxOGddj0EQoXpFbLzGupTelVbG",
+        "produtoIds": [
+          "69b9f9f26699b62f0b4909ff",
+          "69b9fb136699b62f0b490a00"
+        ]
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
