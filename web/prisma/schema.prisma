@@ -14,44 +14,50 @@ enum Role {
   SUPER_ADMIN
 }
 
-// modelos de exemplo abaixo (pode deletar)
-model Curso {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
-  descricao String
-  slug      String @unique
+// ==========================================
+// MODELOS DA LOJINHA DE TIMES
+// ==========================================
 
-  materiasRelacionadas CursoMateriaRelacionada[]
+model Produto {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  nome        String
+  descricao   String
+  preco       Float
+
+  // Relação N:N com Categorias
+  categoriaIds String[]   @db.ObjectId
+  categorias   Categoria[] @relation(fields: [categoriaIds], references: [id])
+
+  // Relação N:N com Compras
+  compraIds    String[]   @db.ObjectId
+  compras      Compra[]   @relation(fields: [compraIds], references: [id])
 }
 
-model CursoMateriaRelacionada {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
+model Categoria {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  nome        String
 
-  curso   Curso  @relation(fields: [cursoId], references: [id])
-  cursoId String
-
-  materia   Materia @relation(fields: [materiaId], references: [id])
-  materiaId String
-
-  @@unique([cursoId, materiaId])
+  // Relação N:N com Produtos
+  produtoIds  String[]    @db.ObjectId
+  produtos    Produto[]   @relation(fields: [produtoIds], references: [id])
 }
 
-model Materia {
-  id                 String                    @id @default(uuid()) @map("_id")
-  name               String
-  descricao          String
-  cor                String
-  slug               String                    @unique
-  cursosRelacionados CursoMateriaRelacionada[]
+model Compra {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  precoTotal  Float
+
+  // Relação 1:N com User
+  userId      String      // Sem @db.ObjectId porque o ID do User do Better Auth é uma String normal
+  user        User        @relation(fields: [userId], references: [id])
+
+  // Relação N:N com Produtos
+  produtoIds  String[]    @db.ObjectId
+  produtos    Produto[]   @relation(fields: [produtoIds], references: [id])
 }
 
-model Licao {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId // id base do mongodb, + perfomance
-  name      String
-  descricao String
-  archived  Boolean? @default(false)
-}
-// modelos de exemplo acima (pode deletar)
+// ==========================================
+// MODELOS DO BETTER AUTH (SISTEMA DE USUÁRIO)
+// ==========================================
 
 model User {
   // nao mexer entre aqui >
@@ -67,14 +73,11 @@ model User {
   role          Role      @default(USER)
   // < e aqui
 
-
+  // Nossa nova relação: Um usuário tem várias compras
+  compras       Compra[]
 
   @@map("user")
 }
-
-
-
-
 
 // evitar mexer daqui pra baixo
 // nesses 3 modelos do better auth
