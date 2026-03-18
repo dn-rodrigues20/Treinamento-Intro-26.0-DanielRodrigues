@@ -2,19 +2,19 @@ import prisma from '../db';
 
 export const CompraService = {
   async criarCompra(userId: string, produtoIds: string[]) {
-    // 1. Primeiro, buscamos os produtos para saber os preços reais deles
+    // 1. Busca Produtos e preços
     const produtosEncontrados = await prisma.produto.findMany({
       where: { id: { in: produtoIds } }
     });
 
-    // 2. Calculamos o valor total (Soma dos preços)
+    // 2. Soma dos preços
     const precoTotal = produtosEncontrados.reduce((acc, prod) => acc + prod.preco, 0);
 
-    // 3. Agora sim, criamos a compra com todos os dados obrigatórios
+    // 3. Dados obrigatórios de compra
     return await prisma.compra.create({
       data: {
         userId: userId,
-        precoTotal: precoTotal, // <--- O campo que estava faltando!
+        precoTotal: precoTotal,
         produtos: {
           connect: produtoIds.map(id => ({ id }))
         }

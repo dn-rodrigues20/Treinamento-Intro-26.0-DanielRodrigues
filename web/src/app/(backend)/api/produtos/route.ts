@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     const novoProduto = await ProdutoService.criarProduto(body);
     return NextResponse.json(novoProduto, { status: 201 });
   } catch (error) {
-    console.error("🚨 ERRO NO BACKEND:", error); // <-- Adicionamos essa linha!
+    console.error("🚨 ERRO NO BACKEND:", error);
     return NextResponse.json({ error: "Erro ao criar produto" }, { status: 500 });
   }
 }

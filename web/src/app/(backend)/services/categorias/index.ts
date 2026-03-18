@@ -9,7 +9,7 @@ export const CategoriaService = {
   // 2. LISTAR
   async listarCategorias() {
     return await prisma.categoria.findMany({
-      include: { produtos: true } // Já traz os produtos daquela categoria junto!
+      include: { produtos: true }
     });
   },
 
