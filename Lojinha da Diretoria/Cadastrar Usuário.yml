@@ -6,6 +6,14 @@ info:
 http:
   method: POST
   url: http://localhost:3000/api/auth/sign-up/email
+  body:
+    type: json
+    data: |-
+      {
+        "email": "diretoria@jimcarrey.com",
+        "password": "trimundial",
+        "name": "Jim Carrey"
+      }
   auth: inherit
 
 settings:

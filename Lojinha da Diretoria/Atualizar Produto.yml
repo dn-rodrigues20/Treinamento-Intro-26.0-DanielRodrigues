@@ -6,6 +6,12 @@ info:
 http:
   method: PATCH
   url: http://localhost:3000/api/produtos/69b9fb136699b62f0b490a00
+  body:
+    type: json
+    data: |-
+      {
+        "categoriaIds": ["69b9fe1c6699b62f0b490a02"]
+      }
   auth: inherit
 
 settings:
