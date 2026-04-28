@@ -46,46 +46,50 @@ function hasRequiredRole(userRole: Role | undefined, requiredRoles: Role[]): boo
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const method = request.method; // Pegamos o método (GET, POST, etc)
   
   const session = await auth.api.getSession({
     headers: await headers()
   });
   
-  const userRole = session?.role as Role | undefined;
+  const userRole = session?.user?.role as Role | undefined;
   const isAuthenticated = !!session?.user;
 
-  // Handle /admin special route
-  if (pathname === "/admin") {
-    if (!isAuthenticated) {
-      return NextResponse.next();
-    }
-    
-    if (hasRequiredRole(userRole, ["ADMIN", "SUPER_ADMIN"])) {
-      // Redirect admin users to dashboard
-      return NextResponse.redirect(new URL("/admin/dashboard", request.url));
-    } else {
-      // Redirect non-admin authenticated users to home
-      return NextResponse.redirect(new URL("/", request.url));
-    }
-  }
+  console.log("🚨 O MIDDLEWARE LEU O CARGO COMO:", userRole);
 
-  
-  if (matchesAnyPattern(pathname, ROUTE_CONFIG.redirectIfAuth)) {
-    if (isAuthenticated) {
-      return NextResponse.redirect(new URL("/aprender", request.url));
-    }
+ // --- PROTEÇÃO DA API ---
+if (pathname.startsWith("/api")) {
+
+  if (pathname.startsWith("/api/auth")) {
     return NextResponse.next();
   }
 
-  if (matchesAnyPattern(pathname, ROUTE_CONFIG.adminRequired)) {
+  if (pathname.startsWith("/api/upload")) {
+    return NextResponse.next();
+  }
+
+  if (method === "GET") return NextResponse.next();
+
     if (!isAuthenticated) {
-      return NextResponse.redirect(new URL("/admin", request.url));
+      return NextResponse.json({ success: false, message: "Acesso negado. Faça login." }, { status: 401 });
     }
-    
-    if (!hasRequiredRole(userRole, ["ADMIN", "SUPER_ADMIN"])) {
-      return NextResponse.redirect(new URL("/", request.url));
+
+    const routesAdmin = ["/api/produtos", "/api/categorias", "/api/compras/"]; 
+    const isEditingRoute = routesAdmin.some(route => pathname.startsWith(route));
+
+    if (isEditingRoute && method !== "GET" && !hasRequiredRole(userRole, ["ADMIN", "SUPER_ADMIN"])) {
+
+        if (pathname === "/api/compras" && method === "POST") {
+            return NextResponse.next();
+        }
+
+        if (pathname.includes("/status") && method === "PATCH" ) {
+          return NextResponse.next();
+        }
+        
+        return NextResponse.json({ success: false, message: "Acesso restrito a administradores." }, { status: 403 });
     }
-    
+
     return NextResponse.next();
   }
 
@@ -102,6 +106,6 @@ export async function middleware(request: NextRequest) {
 export const config = {
   runtime: "nodejs",
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
+    "/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
   ],
 };

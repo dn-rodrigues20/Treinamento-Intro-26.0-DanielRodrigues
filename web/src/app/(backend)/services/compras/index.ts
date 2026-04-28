@@ -27,5 +27,12 @@ export const CompraService = {
     return await prisma.compra.findMany({
       include: { produtos: true, user: true }
     });
-  }
+  },
+
+  async atualizarStatus(compraId: string, novoStatus: string) {
+    return await prisma.compra.update({
+      where: { id: compraId },
+      data: { status: novoStatus }
+    });
+  },
 };

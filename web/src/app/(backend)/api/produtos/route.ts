@@ -1,24 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ProdutoService } from "../../services/produtos";
+import { productSchema } from "../../schemas/produto.schema";
+// Tente este caminho exato (4 níveis para cima para sair de 'produtos', 'api', '(backend)' e 'app')
+import { handleError } from "../../../../utils/api/handle-error";
 
-// 1. ROTA GET: Lista todos os produtos
 export async function GET() {
   try {
     const produtos = await ProdutoService.listarProdutos();
     return NextResponse.json(produtos, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ error: "Erro ao buscar produtos" }, { status: 500 });
+    return handleError(error, "Erro ao buscar produtos");
   }
 }
 
-// 2. ROTA POST: Cria um novo produto
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json(); 
-    const novoProduto = await ProdutoService.criarProduto(body);
+    
+    // O .parse() dispara um erro se não for válido, caindo direto no catch
+    const data = productSchema.parse(body);
+
+    const novoProduto = await ProdutoService.criarProduto(data);
     return NextResponse.json(novoProduto, { status: 201 });
+
   } catch (error) {
-    console.error("🚨 ERRO NO BACKEND:", error);
-    return NextResponse.json({ error: "Erro ao criar produto" }, { status: 500 });
+    // Tratamento centralizado!
+    return handleError(error, "Erro ao criar produto");
   }
 }

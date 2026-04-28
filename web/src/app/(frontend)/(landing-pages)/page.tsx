@@ -3,27 +3,31 @@
 import React, { useState } from 'react';
 import InitialNav from '@/components/base/nav/InitialNav';
 import ProdutoCard from '@/components/ui/ProdutoCard';
+import axios from 'axios';
+import { authClient } from '@/lib/auth-client';
 
 const timesParaVender = [
-  { id: 1, nome: "São Paulo", descricao: "Só não garantimos títulos recentes em sequência.", preco: 3500000000, imagemUrl: "/escudos/sao-paulo.svg" },
-  { id: 2, nome: "Corinthians", descricao: "Acompanha uma arena incrível (e os boletos dela também).", preco: 50, imagemUrl: "/escudos/corinthians.svg" },
-  { id: 3, nome: "Palmeiras", descricao: "Avião da presidente vendido separadamente.", preco: 2800000000, imagemUrl: "/escudos/palmeiras.svg" },
-  { id: 4, nome: "Santos", descricao: "Acompanha as viúvas de Pelé e Neymar.", preco: 1500000000, imagemUrl: "/escudos/santos.svg" },
-  { id: 5, nome: "Flamengo", descricao: "Crise na Gávea inclusa no pacote premium.", preco: 4000000000, imagemUrl: "/escudos/flamengo.svg" },
-  { id: 6, nome: "Fluminense", descricao: "Média de idade do elenco: 38 anos.", preco: 1200000000, imagemUrl: "/escudos/fluminense.svg" },
-  { id: 7, nome: "Vasco", descricao: "Acompanha calculadora de probabilidade de rebaixamento.", preco: 100, imagemUrl: "/escudos/vasco.svg" },
-  { id: 8, nome: "Botafogo", descricao: "Disclaimer: é o time de futebol, não o bairro.", preco: 800000000, imagemUrl: "/escudos/botafogo.svg" },
-  { id: 9, nome: "Cruzeiro", descricao: "Se não comprar esse time hoje, pelo amor de Deus, né?", preco: 900000000, imagemUrl: "/escudos/cruzeiro.svg" },
-  { id: 10, nome: "Atlético-MG", descricao: "Garantia de fábrica até o próximo título do brasileirão.", preco: 1100000000, imagemUrl: "/escudos/atletico-mg.svg" },
-  { id: 11, nome: "Internacional", descricao: "EdenilsoooooooooOOOOOOooooOOOOn, 41 anos.", preco: 1300000000, imagemUrl: "/escudos/internacional.svg" },
-  { id: 12, nome: "Grêmio", descricao: "O imortal que mais morreu.", preco: 1300000000, imagemUrl: "/escudos/gremio.svg" }
+  { id: "69b9f9f26699b62f0b4909ff", nome: "São Paulo", descricao: "Só não garantimos títulos recentes em sequência.", preco: 3500000000, imagemUrl: "/escudos/sao-paulo.svg" },
+  { id: "69ba039e6699b62f0b490a04", nome: "Corinthians", descricao: "Acompanha uma arena incrível (e os boletos dela também).", preco: 50, imagemUrl: "/escudos/corinthians.svg" },
+  { id: "69b9fb136699b62f0b490a00", nome: "Palmeiras", descricao: "Avião da presidente vendido separadamente.", preco: 2800000000, imagemUrl: "/escudos/palmeiras.svg" },
+  { id: "69ba03aa6699b62f0b490a05", nome: "Santos", descricao: "Acompanha as viúvas de Pelé e Neymar.", preco: 1500000000, imagemUrl: "/escudos/santos.svg" },
+  { id: "69ba03b26699b62f0b490a06", nome: "Flamengo", descricao: "Crise na Gávea inclusa no pacote premium.", preco: 4000000000, imagemUrl: "/escudos/flamengo.svg" },
+  { id: "69ba03b76699b62f0b490a07", nome: "Fluminense", descricao: "Média de idade do elenco: 38 anos.", preco: 1200000000, imagemUrl: "/escudos/fluminense.svg" },
+  { id: "69ba03bf6699b62f0b490a08", nome: "Vasco", descricao: "Acompanha calculadora de probabilidade de rebaixamento.", preco: 100, imagemUrl: "/escudos/vasco.svg" },
+  { id: "69ba03c46699b62f0b490a09", nome: "Botafogo", descricao: "Disclaimer: é o time de futebol, não o bairro.", preco: 800000000, imagemUrl: "/escudos/botafogo.svg" },
+  { id: "69ba03c96699b62f0b490a0a", nome: "Cruzeiro", descricao: "Se não comprar esse time hoje, pelo amor de Deus, né?", preco: 900000000, imagemUrl: "/escudos/cruzeiro.svg" },
+  { id: "69ba03ce6699b62f0b490a0b", nome: "Atlético-MG", descricao: "Garantia de fábrica até o próximo título do brasileirão.", preco: 1100000000, imagemUrl: "/escudos/atletico-mg.svg" },
+  { id: "69ba03d46699b62f0b490a0c", nome: "Internacional", descricao: "EdenilsoooooooooOOOOOOooooOOOOn, 41 anos.", preco: 1300000000, imagemUrl: "/escudos/internacional.svg" },
+  { id: "69ba03d86699b62f0b490a0d", nome: "Grêmio", descricao: "O imortal que mais morreu.", preco: 1300000000, imagemUrl: "/escudos/gremio.svg" }
 ];
 
 export default function Home() {
-  const [carrinhoIds, setCarrinhoIds] = useState<number[]>([]);
+  const [carrinhoIds, setCarrinhoIds] = useState<string[]>([]);
   const [menuAberto, setMenuAberto] = useState(false);
 
-  const toggleCarrinho = (id: number) => {
+  const { data: session } = authClient.useSession();
+
+  const toggleCarrinho = (id: string) => {
     if (carrinhoIds.includes(id)) {
       setCarrinhoIds(carrinhoIds.filter((itemId) => itemId !== id));
     } else {
@@ -38,7 +42,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-zinc-800 pb-12 relative">
       
-      {/* Passamos a função de abrir o menu para a Navbar */}
+      {/* Navbar */}
       <InitialNav 
         quantidadeCarrinho={quantidadeCarrinho} 
         precoTotal={precoTotal} 
@@ -113,7 +117,7 @@ export default function Home() {
               )}
             </div>
 
-            {/* Rodapé com o total */}
+           {/* Rodapé com o total */}
             <div className="pt-6 border-t border-zinc-700 mt-4">
               <div className="flex justify-between items-center mb-4">
                 <span className="text-lg text-zinc-300">Total:</span>
@@ -121,7 +125,38 @@ export default function Home() {
                   {precoTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                 </span>
               </div>
-              <button className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg transition-colors">
+              
+              {/* Botão conectado com a API */}
+              <button 
+                onClick={async () => {
+                  if (!session?.user?.id) {
+                    alert("Acesso Negado! Você precisa estar logado na Diretoria para efetuar a compra.");
+                    return;
+                  }
+
+                  try {
+                    const body = {
+                      userId: session.user.id,
+                      produtoIds: carrinhoIds.map(id => String(id)),
+                      precoTotal: precoTotal 
+                    };
+
+                    const response = await axios.post('/api/compras', body);
+                    
+                    if (response.status === 201) {
+                      alert("🎉 CONTRATO ASSINADO! A diretoria agora é sua!");
+                      setCarrinhoIds([]);
+                      setMenuAberto(false);
+                    }
+                    
+                  } catch (error: any) {
+                    console.error("🚨 Deu ruim na negociação:", error);
+                    alert(`Erro: ${error.response?.data?.message || "Ocorreu um erro inesperado."}`);
+                  }
+                }}
+                className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg transition-colors disabled:opacity-50"
+                disabled={quantidadeCarrinho === 0}
+              >
                 Finalizar Compra
               </button>
             </div>

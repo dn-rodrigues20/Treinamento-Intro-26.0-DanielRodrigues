@@ -1,5 +1,5 @@
-import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent } from "@/components/ui/sidebar"
-import Noctiluz from '@/components/svgs/noctiluz.svg'
+//import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent } from "@/components/ui/sidebar"
+//import Noctiluz from '@/components/svgs/noctiluz.svg'
 
 import AdminMenuList from "./AdminMenu";
 

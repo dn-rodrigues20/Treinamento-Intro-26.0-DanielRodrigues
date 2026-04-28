@@ -1,99 +1,68 @@
-'use client'
-import Link from "next/link";
-import { useState, useEffect } from "react";
+'use client';
 
-import LoginOptionals from "@/components/auth/LoginOptionals";
+import { useState } from 'react';
+import { authClient } from '@/lib/auth-client'; 
+import { useRouter } from 'next/navigation';
 
-import RequiredTag from "@/components/base/input/RequiredTag";
-import { authClient } from "@/lib/auth-client";
-import toast from "react-hot-toast";
-
-import dynamic from 'next/dynamic';
-
-const GoogleAuthButton = dynamic(() => import('@/components/auth/GoogleLoginButton'));
-const CredentialsButton = dynamic(() => import('@/components/auth/CredentialsButton'));
-const ValidatedInput = dynamic(() => import('@/components/base/input/ValidatedInput'));
-
-function LoginForm() {
-  const [loading, setLoading] = useState(true);
+export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
-  useEffect(() => {
-    setLoading(false);
-  }, []);
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const result = await authClient.signIn.email({
+      await authClient.signIn.email({
         email,
         password,
-        callbackURL: "/",
+        callbackURL: '/' // Redireciona para a Landing Page após o login
       });
-
-      if (result.error) {
-        toast.error((result.error?.message || 'Erro desconhecido'))
-      }
     } catch (error) {
-      toast.error('Erro: ' + String(error))
+      alert("Erro ao entrar. Verifique suas credenciais.");
     } finally {
       setLoading(false);
     }
   };
 
-  return ( 
-    <div className="lg:w-[90%] xl:w-[80%]">
-      <h2 className="font-bold text-[40px] text-center leading-12">Continue seu aprendizado</h2>
-      <form className="mt-6" onSubmit={handleSubmit}>
-        <ValidatedInput 
-          title="E-mail"
-          placeholder="exemplo@noctiluz.com.br"
-          name="email"
-          type="email"
+  return (
+    <form onSubmit={handleLogin} className="space-y-6">
+      {/* Campo E-mail */}
+      <div>
+        <label className="block text-zinc-300 mb-2 text-sm font-bold uppercase tracking-widest">E-mail Corporativo</label>
+        <input 
+          type="email" 
           value={email}
-          setValue={setEmail}
-          labelClassName='auth-label'
-          inputClassName='auth-input'
-          iconContainerClassName="auth-icon"
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-4 text-white focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all"
+          placeholder="diretoria@jimcarrey.com"
           required
-        ><RequiredTag/></ValidatedInput>
-        
-        <ValidatedInput 
-          title="Senha"
-          placeholder="Insira sua senha"
-          name="password"
-          type="password"
-          value={password}
-          setValue={setPassword}
-
-          overrideValidate={(val) => val.length >= 6}
-
-          containerClassName="mt-4"
-          labelClassName="auth-label"
-          inputClassName="auth-input"
-          iconContainerClassName="auth-icon"
-          required
-        ><RequiredTag/></ValidatedInput>
-
-        <LoginOptionals />
-
-        <CredentialsButton className="mt-6" disabled={loading}>Entrar</CredentialsButton>
-      </form>
-      
-      <div className="flex items-center gap-4 py-5">
-        <div className="flex-grow h-0.5 bg-gray-400" />
-        <p className="text-gray-400 text-lg">ou</p>
-        <div className="flex-grow h-0.5 bg-gray-400" />
+        />
       </div>
 
-      <GoogleAuthButton disabled={loading} text="Entrar com Google" />
+      {/* Campo Senha */}
+      <div>
+        <label className="block text-zinc-300 mb-2 text-sm font-bold uppercase tracking-widest">Código de Acesso</label>
+        <input 
+          type="password" 
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-4 text-white focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all"
+          placeholder="••••••••"
+          required
+        />
+      </div>
 
-      <Link href='/cadastro' className="block w-fit mt-8 text-sm group">Ainda não tem uma conta? <span className="text-pink-500 colorTransition border-b border-transparent group-hover:border-pink-500">Cadastre-se</span></Link>
-    </div>
-   );
+      {/* Botão de Ação */}
+      <button 
+        type="submit"
+        disabled={loading}
+        className="w-full bg-green-600 hover:bg-green-700 text-white font-black py-4 rounded-lg transition-all transform hover:scale-[1.02] active:scale-95 disabled:opacity-50 shadow-lg shadow-green-900/20"
+      >
+        {loading ? 'PROCESSANDO...' : 'ACESSAR DIRETORIA'}
+      </button>
+    </form>
+  );
 }
-
-export default LoginForm;

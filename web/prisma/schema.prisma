@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
+  output   = "../src/generated/client"
 }
 
 datasource db {
@@ -15,7 +15,7 @@ enum Role {
 }
 
 // ==========================================
-// MODELOS DA LOJINHA DE TIMES
+// DIRETORIA JIM CARREY
 // ==========================================
 
 model Produto {
@@ -45,6 +45,7 @@ model Categoria {
 model Compra {
   id          String      @id @default(auto()) @map("_id") @db.ObjectId
   precoTotal  Float
+  status      String      @default("pending")
 
   // Relação 1:N com User
   userId      String      // Sem @db.ObjectId porque o ID do User do Better Auth é uma String normal
@@ -54,7 +55,6 @@ model Compra {
   produtoIds  String[]    @db.ObjectId
   produtos    Produto[]   @relation(fields: [produtoIds], references: [id])
 }
-
 // ==========================================
 // MODELOS DO BETTER AUTH (SISTEMA DE USUÁRIO)
 // ==========================================
