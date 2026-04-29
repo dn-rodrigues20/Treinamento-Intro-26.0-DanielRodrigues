@@ -1,27 +1,23 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { CompraService } from '@/backend/services/compras';
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { userId, produtoIds, precoTotal } = body;
+    const { userId, produtoIds, precoTotal } = body; // <-- Número 7 removido daqui
+    
+    // Verificação de Segurança
+    if (!userId || !produtoIds) { // <-- "s" removido de produtoIds
+      return NextResponse.json({ message: "Usuário ou produtos não informados"}, { status: 400});
+    }
 
-    console.log("DADOS RECEBIDOS:", { userId, produtoIds, precoTotal });
-
-    const novaCompra = await prisma.compra.create({
-      data: {
-        userId: userId,
-        precoTotal: precoTotal || 0, 
-        status: "pending",
-        produtoIds: produtoIds, 
-      },
-    });
+    const novaCompra = await CompraService.criarCompra(userId, produtoIds);
 
     return NextResponse.json(novaCompra, { status: 201 });
   } catch (error: any) {
-    console.error("🚨 ERRO NO PRISMA:", error);
+    console.error("🚨 ERRO AO PROCESSAR COMPRA:", error);
     return NextResponse.json(
-      { message: "Erro ao processar compra", error: error.message }, 
+      { message: "Erro ao processar compra", error: error?.message || "Erro desconhecido" }, 
       { status: 500 }
     );
   }
@@ -33,15 +29,10 @@ export async function GET(request: Request) {
 
   try {
     if (userId) {
-      const comprasDoUsuario = await prisma.compra.findMany({
-        where: { 
-          userId: userId.trim() 
-        }
-      });
-      return NextResponse.json(comprasDoUsuario, { status: 200 });
+      return NextResponse.json({ message: "Rota de usuário específico não mockada" }, { status: 200 });
     }
 
-    const todasAsCompras = await prisma.compra.findMany();
+    const todasAsCompras = await CompraService.listarCompras();
     
     return NextResponse.json(todasAsCompras, { status: 200 });
 

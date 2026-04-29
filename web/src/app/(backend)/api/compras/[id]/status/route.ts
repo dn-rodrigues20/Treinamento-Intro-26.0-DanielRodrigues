@@ -1,32 +1,27 @@
 import { NextResponse } from "next/server";
-import { prisma } from "../../../../../../lib/prisma";
 import { sendEmail } from "@/lib/email/resend";
+import { CompraService } from '@/backend/services/compras';
 
 export async function PATCH(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
+    const compraId = params.id;
+
     const body = await request.json();
-    const { status } = body;
+    const novoStatus = body.status;
+
+    if (!novoStatus) {
+      return NextResponse.json({ message: "O status é obrigatório" }, { status: 400 });
+    }
+   
+    const compraAtualizada = await CompraService.atualizarStatus(compraId, novoStatus);
     
-    const resolvedParams = await params;
-    const compraId = resolvedParams.id;
-
-    // 1. Salvando no banco e puxando os dados do usuário (para ter o e-mail)
-    const compraAtualizada = await prisma.compra.update({
-      where: { id: compraId },
-      data: { status: status },
-      include: {
-        user: true,
-      }
-    });
-
-    // 2. Lógica do E-mail conforme as regras do PDF
     let assunto = "";
     let corpo = "";
 
-    switch (status) {
+    switch (novoStatus) { 
       case "paid":
         assunto = "Pagamento confirmado";
         corpo = `Sua compra (ID: ${compraId}) foi atualizada para o status paid. O cofre da Diretoria agradece!`;
@@ -41,7 +36,6 @@ export async function PATCH(
         break;
     }
 
-    // 3. Só envia o e-mail se for um status mapeado acima e se o usuário tiver e-mail
     if (assunto && compraAtualizada.user?.email) {
       await sendEmail(
         compraAtualizada.user.email,
