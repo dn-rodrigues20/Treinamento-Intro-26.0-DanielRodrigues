@@ -1,7 +1,7 @@
 info:
   name: Criar Categoria
   type: http
-  seq: 6
+  seq: 1
 
 http:
   method: POST
@@ -10,7 +10,7 @@ http:
     type: json
     data: |-
       {
-        "nome": "Série A"
+        "nome": "Aa"
       }
   auth: inherit
 

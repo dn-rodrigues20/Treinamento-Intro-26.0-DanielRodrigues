@@ -1,0 +1,67 @@
+info:
+  name: Criar Produto
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:3000/api/produtos
+  body:
+    type: json
+    data: |-
+      {
+        "nome": "Oi",
+        "descricao": "O amarelão da alemanha",
+        "preco": -100
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: Erro de acesso ao criar produto
+    description: O usuário que não tiver as credenciais (Admin ou Super_Admin) não conseguirá acessar/criar produtos.
+    request:
+      url: http://localhost:3000/api/produtos
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "nome": "Oi",
+            "descricao": "O amarelão da alemanha",
+            "preco": -100
+          }
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: content-type
+          value: application/json
+        - name: set-cookie
+          value: __better-auth-cookie-store=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT
+        - name: vary
+          value: Accept-Encoding
+        - name: date
+          value: Tue, 21 Apr 2026 20:17:39 GMT
+        - name: connection
+          value: keep-alive
+        - name: keep-alive
+          value: timeout=5
+        - name: transfer-encoding
+          value: chunked
+      body:
+        type: json
+        data: |-
+          {
+            "success": false,
+            "message": "Acesso negado. Faça login."
+          }
+
+docs: |-
+  Validação (Zod): Nome (min. 3 caracteres), Descrição (min. 10 caracteres), Preço (deve ser positivo).
+  Acesso: restrito a usuários com cargo ADMIN ou SUPER_ADMIN.

@@ -1,0 +1,27 @@
+info:
+  name: Atualizar Status da Compra
+  type: http
+  seq: 2
+
+http:
+  method: PATCH
+  url: http://localhost:3000/api/compras/69ba02e36699b62f0b490a03/status
+  body:
+    type: json
+    data: |-
+      {
+        "status": "paid"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |-
+  Descrição: Transiciona o pedido entre os estados do ciclo de vida.
+  Status aceitos: pending, paid, shipped, delivered, cancelled.
+  Efeito: Dispara um e-mail de notificação automática ao usuário via Resend a cada alteração.
+  Acesso: restrito a administradores.

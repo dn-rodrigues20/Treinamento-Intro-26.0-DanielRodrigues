@@ -1,0 +1,26 @@
+info:
+  name: Upload de Imagem
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/upload"
+  headers:
+    - name: Cookie
+      value: better-auth.session_token=hW73DQljIgAu8GJEOyZtxCqFrIrLQEB1.STEif57DoYMWWQb2vhnw1TLeOmUjJuAJgzhAHhZAhKc%3D
+      disabled: true
+  body:
+    type: multipart-form
+    data:
+      - name: file
+        type: file
+        value:
+          - C:\Users\danie\Downloads\Escudo_SPFC.png
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

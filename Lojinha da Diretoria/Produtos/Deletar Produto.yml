@@ -1,0 +1,20 @@
+info:
+  name: Deletar Produto
+  type: http
+  seq: 1
+
+http:
+  method: DELETE
+  url: http://localhost:3000/api/produtos/69b9fc236699b62f0b490a01
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |-
+  Descrição: Remove permanentemente um produto do MongoDB.
+  Parâmetro: id do produto na URL
+  Acesso: Privilegiado (Admin).

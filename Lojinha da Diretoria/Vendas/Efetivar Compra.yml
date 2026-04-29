@@ -1,7 +1,7 @@
 info:
   name: Efetivar Compra
   type: http
-  seq: 8
+  seq: 4
 
 http:
   method: POST
@@ -12,8 +12,7 @@ http:
       {
         "userId": "YWs5eoXxOGddj0EQoXpFbLzGupTelVbG",
         "produtoIds": [
-          "69b9f9f26699b62f0b4909ff",
-          "69b9fb136699b62f0b490a00"
+          
         ]
       }
   auth: inherit
@@ -23,3 +22,12 @@ settings:
   timeout: 0
   followRedirects: true
   maxRedirects: 5
+
+docs: |-
+  Descrição: Finaliza o carrinho de compras e gera um contrato/pedido no banco de dados.
+  body sugerido:
+  {
+    "produtosIds": ["id_do_spfc", "id_do_palmeiras"],
+    "precoTotal": 9500.00
+
+  Acesso: requer login.

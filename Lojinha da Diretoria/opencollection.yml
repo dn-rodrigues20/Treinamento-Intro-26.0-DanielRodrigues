@@ -2,6 +2,34 @@ opencollection: 1.0.0
 
 info:
   name: Lojinha da Diretoria
+config:
+  proxy:
+    inherit: true
+    config:
+      protocol: http
+      hostname: ""
+      port: ""
+      auth:
+        username: ""
+        password: ""
+      bypassProxy: ""
+
+docs:
+  content: |-
+    # Guia de Testes - Diretoria Jim Carrey
+
+    ### 🔐 Autenticação
+    Muitas rotas exigem privilégios de **ADMIN**. Para testar via Bruno:
+    1. Faça login no navegador em `localhost:3000/login`.
+    2. Abra o F12 -> Application -> Cookies.
+    3. Copie o valor de `better-auth.session_token`.
+    4. No Bruno, vá na aba **Headers** da requisição e adicione:
+       - **Key:** `Cookie`
+       - **Value:** `better-auth.session_token=SEU_TOKEN_AQUI`
+
+    ### 🚀 Variáveis
+    Recomenda-se configurar um Environment com a variável `baseUrl` como `http://localhost:3000`.
+  type: text/markdown
 bundled: false
 extensions:
   bruno:

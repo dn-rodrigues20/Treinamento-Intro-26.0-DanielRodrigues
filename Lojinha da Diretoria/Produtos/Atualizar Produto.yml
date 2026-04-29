@@ -1,7 +1,7 @@
 info:
   name: Atualizar Produto
   type: http
-  seq: 2
+  seq: 1
 
 http:
   method: PATCH
@@ -19,3 +19,8 @@ settings:
   timeout: 0
   followRedirects: true
   maxRedirects: 5
+
+docs: |-
+  Descrição: Edita informações de um produto existente através do ID.
+  Observação: Apenas os campos enviados no corpo serão atualizados.
+  Acesso: Privilegiado (Admin).
